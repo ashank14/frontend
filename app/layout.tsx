@@ -19,10 +19,10 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body className={inter.className}>
+    <html lang="en" className="dark">
+      <body className={inter.className + " flex flex-col max-h-screen bg-background"}>
         <Navigation />
-        <main className="min-h-screen bg-gray-50">{children}</main>
+        <main className="flex-1 max-h-full overflow-auto">{children}</main>
         <Toaster />
       </body>
     </html>

@@ -46,10 +46,10 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="bg-white shadow-sm border-b">
+    <nav className="bg-card text-card-foreground shadow-sm border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex justify-between items-center h-16">
-          <Link href="/" className="text-xl font-bold text-gray-900">
+          <Link href="/" className="text-xl font-bold text-foreground">
             BookingSmart
           </Link>
 

@@ -125,7 +125,7 @@ export default function AdminDashboard() {
 
   return (
     <ProtectedRoute allowedRoles={["ADMIN"]}>
-      <div className="container mx-auto px-4 py-8">
+      <div className="container w-full h-full overflow-auto mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
         {/* Provider Analytics Controls */}
