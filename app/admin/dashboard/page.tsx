@@ -18,12 +18,19 @@ interface AnalyticsData {
   cancellationRate?: number
 }
 
+interface SystemHealth{
+    overallStatus:String
+    dbStatus:String
+    apiStatus:String
+}
+
 export default function AdminDashboard() {
   const [providerId, setProviderId] = useState("")
   const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({})
   const [loading, setLoading] = useState(false)
   const { toast } = useToast()
   const [providerAppointments, setProviderAppointments] = useState<any[]>([])
+  const[systemHealth,setSystemHealth]=useState<SystemHealth>({})
 
 
   const fetchAppointmentCount = async () => {
@@ -119,13 +126,36 @@ export default function AdminDashboard() {
     }
   }
 
+  const fetchSystemHealth =async () =>{
+      try{
+
+          const response= await api.get(`/actuator/health`)
+          setSystemHealth({
+              overallStatus:response.data.status,
+              dbStatus:response.data.components.db.status,
+              apiStatus:response.data.components.ping.status
+
+          })
+
+      } catch (error: any) {
+             toast({
+               title: "Error",
+               description: error.response?.data?.message || "Failed to fetch cancellation rate",
+               variant: "destructive",
+             })
+           } finally {
+             setLoading(false)
+           }
+  }
+
   useEffect(() => {
     fetchPeakHours()
+    fetchSystemHealth()
   }, [])
 
   return (
     <ProtectedRoute allowedRoles={["ADMIN"]}>
-      <div className="container w-full h-full overflow-auto mx-auto px-4 py-8">
+      <div className="container w-full h-full overflow-hidden mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
 
         {/* Provider Analytics Controls */}
@@ -310,16 +340,16 @@ export default function AdminDashboard() {
             <CardContent>
               <div className="space-y-4">
                 <div className="flex justify-between items-center">
+                  <span>Overall Status</span>
+                  <span className="text-green-600 font-semibold">{systemHealth.overallStatus}</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span>Database Status</span>
+                  <span className="text-green-600 font-semibold">{systemHealth.dbStatus}</span>
+                </div>
+                <div className="flex justify-between items-center">
                   <span>API Status</span>
-                  <span className="text-green-600 font-semibold">Operational</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Database</span>
-                  <span className="text-green-600 font-semibold">Connected</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>Authentication</span>
-                  <span className="text-green-600 font-semibold">Active</span>
+                  <span className="text-green-600 font-semibold">{systemHealth.apiStatus}</span>
                 </div>
               </div>
             </CardContent>

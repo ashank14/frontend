@@ -20,9 +20,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={inter.className + " flex flex-col max-h-screen bg-background"}>
+      <body className={inter.className + " flex flex-col overflow-auto max-h-screen bg-background"}>
         <Navigation />
-        <main className="flex-1 max-h-full overflow-auto">{children}</main>
+        <main className="flex-1 max-h-full">{children}</main>
         <Toaster />
       </body>
     </html>

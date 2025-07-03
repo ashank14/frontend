@@ -6,12 +6,15 @@ import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { User, LogOut, Menu } from "lucide-react"
+  import { usePathname } from "next/navigation"
 
 export default function Navigation() {
   const [username, setUsername] = useState<any>(null)
   const [role,setRole]=useState<any>(null)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const router = useRouter()
+
+  const pathname = usePathname()
 
   useEffect(() => {
     const token = localStorage.getItem("token")
@@ -21,7 +24,7 @@ export default function Navigation() {
       setRole(role)
       setUsername(username)
     }
-  }, [])
+  }, [pathname])
 
   const handleLogout = () => {
     localStorage.removeItem("token")
@@ -54,7 +57,7 @@ export default function Navigation() {
           </Link>
 
           <div className="hidden md:flex items-center space-x-4">
-            {username ? (
+            {role ? (
               <>
                 <Link href={getDashboardLink()}>
                   <Button variant="ghost">Dashboard</Button>

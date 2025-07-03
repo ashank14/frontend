@@ -207,7 +207,9 @@ export default function UserDashboard() {
           <div>
             <h2 className="text-2xl font-semibold mb-4">Available Slots</h2>
             <div className="space-y-4 max-h-[550px] overflow-y-auto pr-2">
-              {slots.map((slot) => (
+              {slots
+                  .filter((slot) => slot.status != "EXPIRED")
+                  .map((slot) => (
                 <Card key={slot.id}>
                   <CardHeader>
                     <div className="flex justify-between items-start">

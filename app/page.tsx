@@ -6,8 +6,8 @@ export default function HomePage() {
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center mb-12">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">Smart Appointment Booking System</h1>
-        <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+        <h1 className="text-4xl font-bold text-violet-500 mb-4">Smart Appointment Booking System</h1>
+        <p className="text-xl text-white max-w-2xl mx-auto">
           Streamline your appointment scheduling with our modern, intuitive booking platform
         </p>
       </div>
@@ -51,7 +51,7 @@ export default function HomePage() {
           <CardContent>
             <p className="text-sm text-gray-600 mb-4">Monitor system performance and user analytics</p>
             <Link href="/signin">
-              <Button variant="secondary" className="w-full">
+              <Button variant="secondary" className="w-full mt-5">
                 Admin Access
               </Button>
             </Link>

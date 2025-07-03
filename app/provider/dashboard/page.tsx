@@ -179,7 +179,7 @@ export default function ProviderDashboard() {
           {/* Appointments */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">My Appointments</h2>
-            <div className="space-y-4 max-h-[550px] overflow-y-auto pr-2">
+            <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2">
                 {appointments.map((appointment) => (
                   <Card key={appointment.appointmentId}>
                     <CardHeader>
@@ -314,7 +314,7 @@ export default function ProviderDashboard() {
             )}
 
             {/* Slot List */}
-            <div className="space-y-4 max-h-[550px] overflow-y-auto pr-2">
+            <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2">
               {slots.map((slot) => (
                 <Card key={slot.id}>
                   <CardHeader>

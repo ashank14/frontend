@@ -26,27 +26,26 @@ export default function RegisterPage() {
   const router = useRouter()
   const { toast } = useToast()
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault()
+  setLoading(true)
+  setError("")
 
-    try {
-      const response = await api.post("/user/register", formData)
+  try {
+    await api.post("/user/register", formData)
 
-      toast({
-        title: "Registration successful!",
-        description: "Please sign in with your credentials.",
-      })
-      router.push("/signin")
-    } catch (error: any) {
-      const errorMessage = error.response?.data?.message || error.message || "Registration failed"
-      setError(errorMessage)
-    } finally {
-      setLoading(false)
-    }
+    toast({
+      title: "OTP sent!",
+      description: `An OTP has been sent for ${formData.username}`,
+    })
+    router.push(`/verify-otp?username=${formData.username}`)
+  } catch (error: any) {
+    const errorMessage = error.response?.data?.message || error.message || "Registration failed"
+    setError(errorMessage)
+  } finally {
+    setLoading(false)
   }
-
+}
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="max-w-md mx-auto">
