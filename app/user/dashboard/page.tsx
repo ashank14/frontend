@@ -29,6 +29,7 @@ interface Slot {
   status: string
   providerUsername: string
   providerEmail: string
+  providerSpecialization: string
 }
 
 export default function UserDashboard() {
@@ -37,6 +38,8 @@ export default function UserDashboard() {
   const [queueSizes, setQueueSizes] = useState<{ [key: number]: number }>({})
   const [searchId, setSearchId] = useState("")
   const [loading, setLoading] = useState(true)
+  const [appointmentSearch, setAppointmentSearch] = useState("")
+  const [slotSpecializationSearch, setSlotSpecializationSearch] = useState("")
   const { toast } = useToast()
 
   useEffect(() => {
@@ -157,102 +160,130 @@ export default function UserDashboard() {
           {/* My Appointments */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">My Appointments</h2>
+            <Input
+              placeholder="Search by Appointment ID"
+              className="mb-4"
+              value={appointmentSearch}
+              onChange={e => setAppointmentSearch(e.target.value)}
+              type="number"
+            />
             <div className="space-y-4 max-h-[550px] overflow-y-auto pr-2">
-              {appointments.map((appointment) => (
-                <Card key={appointment.appointmentId}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">
-                        Apt #{appointment.appointmentId} | Slot #{appointment.slotId}
-                      </CardTitle>
-                      <Badge variant={appointment.status === "CONFIRMED" ? "default" : "secondary"}>
-                        {appointment.status}
-                      </Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        <span>{new Date(appointment.startTime).toLocaleDateString()}</span>
+              {appointments
+                .filter(appointment =>
+                  appointmentSearch === "" ||
+                  appointment.appointmentId.toString().includes(appointmentSearch)
+                )
+                .map((appointment) => (
+                  <Card key={appointment.appointmentId}>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg">
+                          Apt #{appointment.appointmentId} | Slot #{appointment.slotId}
+                        </CardTitle>
+                        <Badge variant={appointment.status === "CONFIRMED" ? "default" : "secondary"}>
+                          {appointment.status}
+                        </Badge>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        <span>
-                          {new Date(appointment.startTime).toLocaleTimeString()} - {new Date(appointment.endTime).toLocaleTimeString()}
-                        </span>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          <span>{new Date(appointment.startTime).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          <span>
+                            {new Date(appointment.startTime).toLocaleTimeString()} - {new Date(appointment.endTime).toLocaleTimeString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          <span>
+                            {appointment.providerUsername} ({appointment.providerEmail})
+                          </span>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        <span>
-                          {appointment.providerUsername} ({appointment.providerEmail})
-                        </span>
-                      </div>
-                    </div>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      className="mt-4"
-                      onClick={() => cancelAppointment(appointment.appointmentId)}
-                    >
-                      <X className="h-4 w-4 mr-2" /> Cancel
-                    </Button>
-                  </CardContent>
-                </Card>
-              ))}
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        className="mt-4"
+                        onClick={() => cancelAppointment(appointment.appointmentId)}
+                      >
+                        <X className="h-4 w-4 mr-2" /> Cancel
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
             </div>
           </div>
 
           {/* Available Slots */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">Available Slots</h2>
+            <Input
+              placeholder="Search by Specialization"
+              className="mb-4"
+              value={slotSpecializationSearch}
+              onChange={e => setSlotSpecializationSearch(e.target.value)}
+            />
             <div className="space-y-4 max-h-[550px] overflow-y-auto pr-2">
               {slots
-                  .filter((slot) => slot.status != "EXPIRED")
-                  .map((slot) => (
-                <Card key={slot.id}>
-                  <CardHeader>
-                    <div className="flex justify-between items-start">
-                      <CardTitle className="text-lg">
-                        #{slot.id} {slot.description}
-                      </CardTitle>
-                      <Badge variant="outline">{slot.status}</Badge>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="space-y-2 text-sm">
-                      <div className="flex items-center gap-2">
-                        <Calendar className="h-4 w-4" />
-                        <span>{new Date(slot.startTime).toLocaleDateString()}</span>
+                .filter(slot =>
+                  slotSpecializationSearch === "" ||
+                  (slot.providerUsername && slot.providerUsername.toLowerCase().includes(slotSpecializationSearch.toLowerCase())) ||
+                  (slot.providerEmail && slot.providerEmail.toLowerCase().includes(slotSpecializationSearch.toLowerCase())) ||
+                  (slot.providerSpecialization && slot.providerSpecialization.toLowerCase().includes(slotSpecializationSearch.toLowerCase()))
+                )
+                .filter(slot => slot.status != "EXPIRED")
+                .map((slot) => (
+                  <Card key={slot.id}>
+                    <CardHeader>
+                      <div className="flex justify-between items-start">
+                        <CardTitle className="text-lg">
+                          #{slot.id} {slot.description}
+                        </CardTitle>
+                        <Badge variant="outline">{slot.status}</Badge>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <Clock className="h-4 w-4" />
-                        <span>
-                          {new Date(slot.startTime).toLocaleTimeString()} - {new Date(slot.endTime).toLocaleTimeString()}
-                        </span>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-center gap-2">
+                          <Calendar className="h-4 w-4" />
+                          <span>{new Date(slot.startTime).toLocaleDateString()}</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <Clock className="h-4 w-4" />
+                          <span>
+                            {new Date(slot.startTime).toLocaleTimeString()} - {new Date(slot.endTime).toLocaleTimeString()}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <User className="h-4 w-4" />
+                          <span>
+                            {slot.providerUsername} ({slot.providerEmail})
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className="font-medium text-gray-500">Specialization:</span>
+                          <span>{slot.providerSpecialization}</span>
+                        </div>
+                        <div className="text-sm">Queue size: {queueSizes[slot.id] ?? 0}</div>
                       </div>
-                      <div className="flex items-center gap-2">
-                        <User className="h-4 w-4" />
-                        <span>
-                          {slot.providerUsername} ({slot.providerEmail})
-                        </span>
+                      <div className="flex gap-2 mt-4">
+                        <Button className="flex-1" onClick={() => bookSlot(slot.id)}>
+                          Book Appointment
+                        </Button>
+                        <Button className="flex-1" variant="secondary" onClick={() => joinQueue(slot.id)}>
+                          Join Queue
+                        </Button>
+                        <Button className="flex-1" variant="outline" onClick={() => leaveQueue(slot.id)}>
+                          Leave Queue
+                        </Button>
                       </div>
-                      <div className="text-sm">Queue size: {queueSizes[slot.id] ?? 0}</div>
-                    </div>
-                    <div className="flex gap-2 mt-4">
-                      <Button className="flex-1" onClick={() => bookSlot(slot.id)}>
-                        Book Appointment
-                      </Button>
-                      <Button className="flex-1" variant="secondary" onClick={() => joinQueue(slot.id)}>
-                        Join Queue
-                      </Button>
-                      <Button className="flex-1" variant="outline" onClick={() => leaveQueue(slot.id)}>
-                        Leave Queue
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                ))}
             </div>
           </div>
         </div>

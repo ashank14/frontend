@@ -19,9 +19,9 @@ interface AnalyticsData {
 }
 
 interface SystemHealth{
-    overallStatus:String
-    dbStatus:String
-    apiStatus:String
+    overallStatus?:String
+    dbStatus?:String
+    apiStatus?:String
 }
 
 export default function AdminDashboard() {

@@ -45,6 +45,8 @@ export default function ProviderDashboard() {
     endTime: "",
     status: "AVAILABLE",
   })
+  const [appointmentSearch, setAppointmentSearch] = useState("");
+  const [slotSearch, setSlotSearch] = useState("");
   const { toast } = useToast()
 
   useEffect(() => {
@@ -179,8 +181,20 @@ export default function ProviderDashboard() {
           {/* Appointments */}
           <div>
             <h2 className="text-2xl font-semibold mb-4">My Appointments</h2>
+            <Input
+              placeholder="Search by Appointment ID"
+              className="mb-4"
+              value={appointmentSearch}
+              onChange={e => setAppointmentSearch(e.target.value)}
+              type="number"
+            />
             <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2">
-                {appointments.map((appointment) => (
+                {appointments
+                  .filter(appointment =>
+                    appointmentSearch === "" ||
+                    appointment.appointmentId.toString().includes(appointmentSearch)
+                  )
+                  .map((appointment) => (
                   <Card key={appointment.appointmentId}>
                     <CardHeader>
                       <div className="flex justify-between items-start">
@@ -261,7 +275,13 @@ export default function ProviderDashboard() {
                 Create Slot
               </Button>
             </div>
-
+            <Input
+              placeholder="Search by Slot ID"
+              className="mb-4"
+              value={slotSearch}
+              onChange={e => setSlotSearch(e.target.value)}
+              type="number"
+            />
             {showCreateForm && (
               <Card className="mb-6">
                 <CardHeader>
@@ -315,7 +335,12 @@ export default function ProviderDashboard() {
 
             {/* Slot List */}
             <div className="space-y-4 max-h-[480px] overflow-y-auto pr-2">
-              {slots.map((slot) => (
+              {slots
+                .filter(slot =>
+                  slotSearch === "" ||
+                  slot.id.toString().includes(slotSearch)
+                )
+                .map((slot) => (
                 <Card key={slot.id}>
                   <CardHeader>
                     <div className="flex justify-between items-start">
